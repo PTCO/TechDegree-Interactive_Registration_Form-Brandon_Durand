@@ -144,6 +144,7 @@ paymentMethods.addEventListener('change', e=> {
 const form = document.querySelector('form');
 const inputs = form.querySelectorAll('input[id]');
 const payment = document.querySelector('#payment');
+const email = document.querySelector('#email');
 
 // Regular Expressions
 const validEmail = /^[a-zA-Z0-9.]*@\w+.com$/gm;
@@ -166,8 +167,25 @@ function showValid(input, classToKeep = ''){
     input.parentElement.lastElementChild.style.display = 'none'
 }
 
+email.addEventListener('keyup', ()=> {
+    realTimeEmailValidation();
+})
+
+// Real Time Email Validation
+function realTimeEmailValidation(){
+    if(!validEmail.test(document.querySelector('#email').value)) {
+        showInvalid(document.querySelector('#email'))
+    }
+    else{
+        console.log('no')
+        showValid(document.querySelector('#email'))
+    }
+}
+
 form.addEventListener('submit', e=> {
     errors = 0;
+
+
 
     // Activities Check
     if(activityTotal.innerText === 'Total: $0'){
@@ -184,13 +202,12 @@ form.addEventListener('submit', e=> {
         if(input.id === 'name' && input.value === '') {
             showInvalid(input)
         }
-        else if(input.id === 'name' && input.value !== ''){
-            showValid(input)
-        }
-        else if(input.id === 'email' && !validEmail.test(input.value)) {
-            showInvalid(input)
-        }
         else if(input.id === 'email'){
+            if(validEmail.test(document.querySelector('#email').value)){
+                showValid(document.querySelector('#email'))
+            }
+        }
+        else if(input.id === 'name' && input.value !== ''){
             showValid(input)
         }
 
@@ -227,24 +244,15 @@ form.addEventListener('submit', e=> {
         }
     })
 
+    console.log(errors , validEmail.test(email.value))
+
     if(errors > 0){
         e.preventDefault();
     }
 
 })
 
-// inputs.forEach((input)=> {
-//     if(input.id === 'email'){
-//         input.addEventListener('keyup', ()=> {
-//             if(!validEmail.test(input.value)) {
-//                 showInvalid(input)
-//             }
-//             else{
-//                 showValid(input)
-//             }
-//         })
-//     }
-// })
+
 
 
 
