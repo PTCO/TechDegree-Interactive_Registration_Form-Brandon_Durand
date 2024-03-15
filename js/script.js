@@ -79,9 +79,16 @@ function disableActivities(selectedActivity){
         }
     })
 }
-function enableActivities(){
+function enableActivities(selectedActivity){
     activitiesTime.forEach((activity)=> {
-        activity.parentElement.className = ' ';
+
+        let selectedTime = selectedActivity.nextElementSibling.nextElementSibling.innerText
+
+        let sameTime = activity.innerHTML;
+
+        if(sameTime === selectedTime){
+            activity.parentElement.className = ' ';
+        }
         activity.previousElementSibling.removeAttribute('disabled')
     })
 }
@@ -94,7 +101,7 @@ activities.forEach((input, index)=> {
             cost += parseInt(activitiesCost[index].innerText.replace('$', ' '));
         }
         else if(input.checked === false){
-            enableActivities()
+            enableActivities(input)
             cost -= parseInt(activitiesCost[index].innerText.replace('$', ' '));
         }
         activityTotal.innerText = `Total: $${cost}`
@@ -149,20 +156,18 @@ let errors = 0;
 function showInvalid(input , classToKeep = '', hintMessage = ''){
     input.parentElement.className = `${classToKeep} not-valid`
     input.parentElement.lastElementChild.style.display = 'block'
-
     if(hintMessage !== ''){
         input.parentElement.lastElementChild.innerText = hintMessage;
     }
-
     errors++;
 }
-
 function showValid(input, classToKeep = ''){
     input.parentElement.className = `${classToKeep} valid`
     input.parentElement.lastElementChild.style.display = 'none'
 }
 
 form.addEventListener('submit', e=> {
+    errors = 0;
 
     // Activities Check
     if(activityTotal.innerText === 'Total: $0'){
@@ -190,26 +195,35 @@ form.addEventListener('submit', e=> {
         }
 
         // Payment Methods
-        else if(payment.value === 'credit-card' && input.id === 'cc-num' && !validCreditCardNum.test(input.value) && input.value !== ''){
-            showInvalid(input, '', 'Credit card number must be between 13 - 16 digits & contain no special characters or letters')
+
+        function validatePaymentInfo(field){
+            if(validCreditCardNum.test(field.value)){
+                showValid(field)
+            }
+            else if(validZip.test(field.value)){
+                showValid(field)
+            }
+            else if(validCVV.test(field.value)){
+                showValid(field)
+            }
+            else {
+                if(field.id === 'cc-num' && field.value === ''){
+                    showInvalid(field, '', 'Credit card number cannot be empty or blank')
+                }
+                else if(field.id === 'cc-num'){
+                    showInvalid(field, '', 'Credit card number must be between 13 - 16 digits & contain no special characters or letters')
+                }
+                else if(field.id === 'zip'){
+                    showInvalid(field)
+                }
+                else if(field.id === 'cvv'){
+                    showInvalid(field)
+                }
+            }
         }
-        else if(payment.value === 'credit-card' && input.id === 'cc-num' && input.value === ''){
-            showInvalid(input, '', 'Credit card number cannot be empty or blank')
-        }
-        else if(payment.value === 'credit-card' && input.id === 'cc-num'){
-            showValid(input)
-        }
-        else if(payment.value === 'credit-card' && input.id === 'zip' && !validZip.test(input.value)){
-            showInvalid(input)
-        }
-        else if(payment.value === 'credit-card' && input.id === 'zip'){
-            showValid(input)
-        }
-        else if(payment.value === 'credit-card' && input.id === 'cvv' && !validCVV.test(input.value)){
-            showInvalid(input)
-        }
-        else if(payment.value === 'credit-card' && input.id === 'cvv'){
-            showValid(input)
+
+        if(payment.value === 'credit-card'){
+            validatePaymentInfo(input)
         }
     })
 
@@ -219,18 +233,18 @@ form.addEventListener('submit', e=> {
 
 })
 
-inputs.forEach((input)=> {
-    if(input.id === 'email'){
-        input.addEventListener('keyup', ()=> {
-            if(!validEmail.test(input.value)) {
-                showInvalid(input)
-            }
-            else{
-                showValid(input)
-            }
-        })
-    }
-})
+// inputs.forEach((input)=> {
+//     if(input.id === 'email'){
+//         input.addEventListener('keyup', ()=> {
+//             if(!validEmail.test(input.value)) {
+//                 showInvalid(input)
+//             }
+//             else{
+//                 showValid(input)
+//             }
+//         })
+//     }
+// })
 
 
 
