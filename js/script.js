@@ -69,9 +69,7 @@ function disableActivities(selectedActivity){
     let selectedTime = selectedActivity.nextElementSibling.nextElementSibling.innerText
 
     activitiesTime.forEach((activity)=> {
-
         let sameTime = activity.innerHTML;
-
         if(sameTime === selectedTime){
             activity.previousElementSibling.previousElementSibling.setAttribute('disabled', "")
             selectedActivity.removeAttribute('disabled');
@@ -88,8 +86,8 @@ function enableActivities(selectedActivity){
 
         if(sameTime === selectedTime){
             activity.parentElement.className = ' ';
+            activity.previousElementSibling.previousElementSibling.removeAttribute('disabled')
         }
-        activity.previousElementSibling.removeAttribute('disabled')
     })
 }
 
@@ -126,7 +124,6 @@ const showMethod = (show)=>{
         }
     })
 }
-
 paymentMethods.addEventListener('change', e=> {
     if( e.target.value === 'credit-card'){
         showMethod('credit-card')
@@ -140,19 +137,17 @@ paymentMethods.addEventListener('change', e=> {
 })
 
 // Form Validation
-
 const form = document.querySelector('form');
 const inputs = form.querySelectorAll('input[id]');
 const payment = document.querySelector('#payment');
 const email = document.querySelector('#email');
+let errors = 0;
 
 // Regular Expressions
 const validEmail = /^[a-zA-Z0-9.]*@\w+.com$/gm;
 const validCreditCardNum = /^\d{13,16}$/gm;
 const validZip = /^\d{5}$/gm;
 const validCVV = /^\d{3}$/gm;
-
-let errors = 0;
 
 function showInvalid(input , classToKeep = '', hintMessage = ''){
     input.parentElement.className = `${classToKeep} not-valid`
@@ -166,12 +161,11 @@ function showValid(input, classToKeep = ''){
     input.parentElement.className = `${classToKeep} valid`
     input.parentElement.lastElementChild.style.display = 'none'
 }
-
+// Real Time Email Validation
 email.addEventListener('keyup', ()=> {
     realTimeEmailValidation();
 })
 
-// Real Time Email Validation
 function realTimeEmailValidation(){
     if(!validEmail.test(document.querySelector('#email').value)) {
         showInvalid(document.querySelector('#email'))
