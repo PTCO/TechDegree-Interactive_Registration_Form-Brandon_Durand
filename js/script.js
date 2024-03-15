@@ -171,7 +171,6 @@ function realTimeEmailValidation(){
         showInvalid(document.querySelector('#email'))
     }
     else{
-        console.log('no')
         showValid(document.querySelector('#email'))
     }
 }
